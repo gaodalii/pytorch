@@ -43,12 +43,13 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - $HOME/.Xauthority:/root/.Xauthority:rw    
       - /etc/localtime:/etc/localtime:ro      
-      - ./data:/data          
+      - persistent_data:/data          
+      # - ./data:/data          
     working_dir: /data
     command: ["/scripts/entrypoint.sh"]    
     # command: [ "tail", "-f"]    
     # command: ["jupyter-lab", "--no-browser", "--port=9999", "--allow-root", "--ip=192.168.6.200", "--NotebookApp.iopub_data_rate_limit=1.0e10"]
 
-# volumes:
-  # torch_cache:     
-#   rembg_models:       
+volumes:
+  persistent_data:     
+
