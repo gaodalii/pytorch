@@ -1,0 +1,54 @@
+# docker compose  -p instantmesh up --remove-orphans
+
+services:
+  pytorch241 :    
+    image: registry.light-field.tech/citygen/pytorch:2.4.1 
+    restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN                                           
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['3'] # ['1', '3'] 
+            capabilities: [gpu]           
+          memory: 32g                
+    environment:
+      - DISPLAY
+      # - NVIDIA_DRIVER_CAPABILITIES=all
+      # - HF_HOME=/workspace/HF_HOME
+      # - HF_HUB_OFFLINE=1
+      # - HF_ENDPOINT=https://hf-mirror.com
+      # - http_proxy=http://127.0.0.1:11000
+      # - https_proxy=http://127.0.0.1:11000         
+      # - no_proxy=localhost,127.0.0.1,::1
+    init: true
+    ipc: "host"
+    network_mode: host
+    # ports:
+    #   - "30122:30122"     
+    #   - "30199:30199"               
+    runtime: nvidia      
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      stack:
+        soft: 67108864
+        hard: 67108864        
+    mem_limit: 64g       
+    oom_kill_disable: false              
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $HOME/.Xauthority:/root/.Xauthority:rw    
+      - /etc/localtime:/etc/localtime:ro      
+      - ./data:/data          
+    working_dir: /data
+    command: ["/scripts/entrypoint.sh"]    
+    # command: [ "tail", "-f"]    
+    # command: ["jupyter-lab", "--no-browser", "--port=9999", "--allow-root", "--ip=192.168.6.200", "--NotebookApp.iopub_data_rate_limit=1.0e10"]
+
+# volumes:
+  # torch_cache:     
+#   rembg_models:       
